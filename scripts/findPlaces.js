@@ -50,10 +50,16 @@ async function findPlaces() {
                     key: process.env.GOOGLE_MAPS_API_KEY
                 }
             });
+
+
+            console.log(response);
             
             if (response.data.results && response.data.results.length > 0) {
                 // Filter out places we've already seen (by place_id)
                 const newPlaces = response.data.results.filter(place => {
+                    console.log('*****************************************************');
+                    console.log(place);
+                    console.log('*****************************************************');
                     if (!seenPlaceIds.has(place.place_id)) {
                         seenPlaceIds.add(place.place_id);
                         return true;
