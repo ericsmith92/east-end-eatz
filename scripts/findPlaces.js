@@ -99,10 +99,6 @@ async function getPlaces(params){
     return response;
 }
 
-function filterPlaces(page, seenPlaceIds){
-
-}
-
 seedDatabase()
     .then(() => console.log('Database seeding process completed'))
     .catch(err => console.error('Failed to seed database:', err));
