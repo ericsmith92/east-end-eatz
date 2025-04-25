@@ -1,6 +1,7 @@
 const { Client } = require('@googlemaps/google-maps-services-js');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+const fs = require('fs');
 
 const client = new Client({});
 const ST_LAWRENCE_LOCATION = "43.651067,-79.370661"; // Center of St. Lawrence
@@ -12,6 +13,7 @@ async function seedDatabase() {
         if (places && places.length > 0) {
             console.log(`Found ${places.length} places to insert into DB`);
             //connect and insert into DB
+            dumpJson('stlawrence_first_page', places);
         } else {
             console.log('No places found to insert into DB');
         }
@@ -48,23 +50,22 @@ async function findPlaces() {
         try {
             console.log(`Fetching results for query: "${query}"`);
             let allPages = [];
-            const firstPage = await getPlaces(params);
-
+            const firstPage = await getPlaces(params); 
             allPages.push(firstPage);
 
-            let nextPageToken = firstPage.data.next_page_token;
+            let nextPageToken = firstPage.nextPageToken;
 
             while(nextPageToken){
                 await new Promise(r => setTimeout(r, 2000)); 
                 const nextPage = await getPlaces({ pagetoken: nextPageToken, key: process.env.GOOGLE_MAPS_API_KEY });
                 allPages = [...allPages, nextPage];
-                nextPageToken = nextPage.data.next_page_token;
+                nextPageToken = nextPage.nextPageToken;
             }
 
             for(const page of allPages){
-                if (page.data.results && page.data.results.length > 0) {
+                if (page.places && page.places.length > 0) {
                     // Filter out places we've already seen (by place_id)
-                    const newPlaces = page.data.results.filter(place => {
+                    const newPlaces = page.places.filter(place => {
                         if (!seenPlaceIds.has(place.place_id)) {
                             seenPlaceIds.add(place.place_id);
                             return true;
@@ -92,12 +93,54 @@ async function findPlaces() {
 }
 
 async function getPlaces(params){  
-    const response = await client.textSearch({
+    const textSearchResponse = await client.textSearch({
         params
     });
 
-    return response;
+    //wrap in a Promise.all so that all promises kicked off by the map settle
+    const augmentedPlaceData = await Promise.all(
+        textSearchResponse.data.results.map(async (place) => {
+          const placeDetails = await getDetails(place.place_id);
+    
+          return {       
+            ...place,
+            ...placeDetails
+          };
+        })
+      );
+
+    return {
+        places: augmentedPlaceData,
+        nextPageToken: textSearchResponse.data.next_page_token
+    }
 }
+
+async function getDetails(placeId) {
+    const { data } = await client.placeDetails({
+      params: {
+        place_id: placeId,
+        fields: [
+          'website',
+          'formatted_phone_number',
+          'opening_hours',
+        ],
+        language: 'en-CA',
+        key: process.env.GOOGLE_MAPS_API_KEY
+      },
+      timeout: 2000
+    });
+
+    return data.result; 
+  }
+
+function dumpJson(name, data) {
+    const dir = path.resolve(__dirname, 'logs');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);          
+  
+    const file = path.join(dir, `${name}.json`);
+    fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`🔍  Saved JSON to ${file}`);
+  }
 
 seedDatabase()
     .then(() => console.log('Database seeding process completed'))
