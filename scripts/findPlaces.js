@@ -2,8 +2,10 @@ const { Client } = require('@googlemaps/google-maps-services-js');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 const fs = require('fs');
+const { createClient } = require('@supabase/supabase-js');
 
 const client = new Client({});
+const supabase = createClient('https://uvygxqbowwscmrdtefmx.supabase.co', process.env.SUPABASE_SECRET_KEY);
 const ST_LAWRENCE_LOCATION = "43.651067,-79.370661"; // Center of St. Lawrence
 
 async function seedDatabase() {
@@ -12,8 +14,9 @@ async function seedDatabase() {
         
         if (places && places.length > 0) {
             console.log(`Found ${places.length} places to insert into DB`);
-            //connect and insert into DB
-            dumpJson('stlawrence_first_page', places);
+            
+            const cleanPlaces = cleanPlacesData(places);
+            const insertedData = await savePlaces(cleanPlaces);
         } else {
             console.log('No places found to insert into DB');
         }
@@ -132,6 +135,43 @@ async function getDetails(placeId) {
 
     return data.result; 
   }
+
+  async function savePlaces(placesArray) {
+    const { data, error } = await supabase
+      .from('places')
+      .upsert(placesArray, {
+        onConflict: 'place_id'  
+      })
+      .select();
+  
+    if (error) console.error(error);
+
+    return data;
+  }
+
+  function cleanPlacesData(places){
+    const cleanPlaces = places.map(place => {
+        const { place_id, name, formatted_address, geometry, rating, price_level, user_ratings_total, opening_hours, photos, website, formatted_phone_number } = place;
+        
+        return {
+            place_id,
+            name,
+            address: formatted_address,
+            lat: geometry.location.lat,
+            lng: geometry.location.lng,
+            rating,
+            price_level,
+            user_ratings_total,
+            weekday_hours: opening_hours?.weekday_text,
+            photo_ref: photos?.[0]?.photo_reference,
+            photos,
+            website,
+            phone_number: formatted_phone_number
+        }
+    });
+
+    return cleanPlaces;
+}
 
 function dumpJson(name, data) {
     const dir = path.resolve(__dirname, 'logs');
