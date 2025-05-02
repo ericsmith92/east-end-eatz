@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { supabase } from './lib/supabaseClient'
 
 const PAGE_SIZE = 15;
-const gmapKey = import.meta.env.GOOGLE_MAPS_API_KEY; 
+const gmapKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; 
 const places = ref([]);
 
 async function getPlaces() {
@@ -13,7 +13,9 @@ async function getPlaces() {
 
 onMounted(() => {
   getPlaces()
-})
+});
+
+console.log(gmapKey)
 </script>
 
 <template>
