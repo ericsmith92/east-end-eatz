@@ -1,8 +1,13 @@
-const { Client } = require('@googlemaps/google-maps-services-js');
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
-const fs = require('fs');
-const { createClient } = require('@supabase/supabase-js');
+import {Client} from '@googlemaps/google-maps-services-js';
+import path from 'path';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { createClient } from'@supabase/supabase-js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 const client = new Client({});
 const supabase = createClient('https://uvygxqbowwscmrdtefmx.supabase.co', process.env.SUPABASE_SECRET_KEY);
@@ -78,7 +83,6 @@ async function findPlaces() {
                     });
                     
                     allPlaces = [...allPlaces, ...newPlaces];
-                    //console.log(`Added ${newPlaces.length} new places from this query`);
                 } else {
                     console.log('No results for this query');
                 }    
@@ -172,15 +176,6 @@ async function getDetails(placeId) {
 
     return cleanPlaces;
 }
-
-function dumpJson(name, data) {
-    const dir = path.resolve(__dirname, 'logs');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);          
-  
-    const file = path.join(dir, `${name}.json`);
-    fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf8');
-    console.log(`🔍  Saved JSON to ${file}`);
-  }
 
 seedDatabase()
     .then(() => console.log('Database seeding process completed'))
