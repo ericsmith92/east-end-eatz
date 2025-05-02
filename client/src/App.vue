@@ -2,20 +2,28 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from './lib/supabaseClient'
 
-const PAGE_SIZE = 15;
 const gmapKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; 
+const PAGE_SIZE = 15;
+const offset = ref(0);
 const places = ref([]);
 
 async function getPlaces() {
-  const { data, error } = await supabase.from('places').select('*').range(0, PAGE_SIZE - 1);
-  places.value = data
+  const { data, error } = await supabase
+    .from('places')
+    .select('*')
+    .range(offset.value, offset.value + PAGE_SIZE - 1);
+
+  if(error){
+    return error;
+  }
+
+  places.value = [...data];
+  offset.value += PAGE_SIZE;
 }
 
 onMounted(() => {
   getPlaces()
 });
-
-console.log(gmapKey)
 </script>
 
 <template>
@@ -25,4 +33,5 @@ console.log(gmapKey)
       <img :src="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${place.photo_ref}&key=${gmapKey}`" :alt="`${place.name}`"/>
     </li>
   </ul>
+  <button @click="getPlaces">Load Next</button>
 </template>
