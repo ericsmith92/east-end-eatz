@@ -6,23 +6,35 @@ const gmapKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const PAGE_SIZE = 15;
 const offset = ref(0);
 const places = ref([]);
+let totalCount = 0;
 
-async function getPlaces() {
-  const { data, error } = await supabase
+async function loadPage (start) {
+  const end = start + PAGE_SIZE - 1;
+  const { data, error, count } = await supabase
     .from('places')
-    .select('*')
-    .range(offset.value, offset.value + PAGE_SIZE - 1);
+    .select('*', { count: 'exact' })
+    .range(start, end)
 
-  if(error){
-    return error;
-  }
+  if (error) throw error;
 
-  places.value = [...data];
-  offset.value += PAGE_SIZE;
+  totalCount = count;
+  places.value = data;
+  offset.value = start;
+}
+
+function getNextPlaces () {
+  const start = offset.value + PAGE_SIZE;
+  if(start > totalCount) return;
+  return loadPage(start);
+}
+
+function getPreviousPlaces () {
+  if (offset.value === 0) return;
+  return loadPage(Math.max(0, offset.value - PAGE_SIZE));
 }
 
 onMounted(() => {
-  getPlaces()
+  loadPage(0);
 });
 </script>
 
@@ -33,5 +45,6 @@ onMounted(() => {
       <img :src="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${place.photo_ref}&key=${gmapKey}`" :alt="`${place.name}`"/>
     </li>
   </ul>
-  <button @click="getPlaces">Load Next</button>
+  <button @click="getPreviousPlaces">Previous</button>
+  <button @click="getNextPlaces">Next</button>
 </template>
