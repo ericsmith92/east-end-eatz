@@ -1,0 +1,22 @@
+name: Get Places
+
+on:
+  schedule:
+    - cron:  '30 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with: { version: 8 }
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: node -r dotenv/config scripts/refresh-places.js
+        env:
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          GOOGLE_MAPS_API_KEY:          ${{ secrets.GOOGLE_MAPS_API_KEY }}
