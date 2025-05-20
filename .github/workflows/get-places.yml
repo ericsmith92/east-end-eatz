@@ -19,4 +19,4 @@ jobs:
       - run: node -r dotenv/config scripts/refresh-places.js
         env:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          GOOGLE_MAPS_API_KEY:          ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
