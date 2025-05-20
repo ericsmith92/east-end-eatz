@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.1",
     "@nuxt/eslint": "1.4.0",
+    "@supabase/supabase-js": "^2.49.5",
+    "dotenv": "^16.5.0",
     "eslint": "^9.27.0",
     "nuxt": "^3.17.3",
     "vue": "^3.5.14",
