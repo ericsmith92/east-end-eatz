@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 const client = new Client({});
-const supabase = createClient('https://uvygxqbowwscmrdtefmx.supabase.co', process.env.SUPABASE_SECRET_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 const ST_LAWRENCE_LOCATION = "43.651067,-79.370661"; // Center of St. Lawrence
 
 async function seedDatabase() {
