@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:types": "pnpm dlx supabase gen types typescript --project-id $(cat supabase/.temp/project-ref | tr -d '\n') > types/database.types.ts"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.1",
