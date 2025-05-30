@@ -1,5 +1,5 @@
 <template>
-    <header>
-        <h1>East End Eatz</h1>
-    </header>
+  <header>
+    <h1>East End Eatz</h1>
+  </header>
 </template>

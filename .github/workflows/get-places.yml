@@ -2,7 +2,7 @@ name: Get Places
 
 on:
   schedule:
-    - cron:  '30 8 * * 1'
+    - cron: '30 8 * * 1'
   workflow_dispatch:
 
 jobs:

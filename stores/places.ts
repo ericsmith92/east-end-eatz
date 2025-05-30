@@ -4,11 +4,11 @@ import type { Place } from '~/types/Place'
 export const usePlacesStore = defineStore('places', {
   state: () => ({
     list: [] as Place[] | any[],
-    status: 'idle' 
+    status: 'idle',
   }),
 
   actions: {
-    async fetchAll () {
+    async fetchAll() {
       this.status = 'loading'
       const supabase = useSupabaseClient()
 
@@ -25,6 +25,6 @@ export const usePlacesStore = defineStore('places', {
 
       this.list = data
       this.status = 'idle'
-    }
-  }
+    },
+  },
 })

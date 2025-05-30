@@ -1,5 +1,5 @@
 <template>
-    <footer>
-        <span>Hopefully this is cool</span>
-    </footer>
+  <footer>
+    <span>Hopefully this is cool</span>
+  </footer>
 </template>

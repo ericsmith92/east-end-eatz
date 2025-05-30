@@ -4,12 +4,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', '@pinia/nuxt'],
   typescript: {
-    typeCheck: true
+    typeCheck: true,
   },
-   runtimeConfig: {
+  runtimeConfig: {
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY
-    }
-  }
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    },
+  },
 })

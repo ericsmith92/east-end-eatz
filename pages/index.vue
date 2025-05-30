@@ -10,5 +10,5 @@ await callOnce(() => placesStore.fetchAll())
 </script>
 
 <template>
-    <div>Home Page</div>
+  <div>Home Page</div>
 </template>
