@@ -1,14 +1,12 @@
-// plugins/supabase.ts
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '~/types/database.types'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(nuxtApp => {
   const config = useRuntimeConfig().public
 
-  const supabaseUrl     = config.supabaseUrl
+  const supabaseUrl = config.supabaseUrl
   const supabaseAnonKey = config.supabaseAnonKey
 
-  // One shared instance for server-side rendering *and* browser
   const supabase: SupabaseClient<Database> = createClient<Database>(supabaseUrl, supabaseAnonKey)
 
   nuxtApp.provide('supabase', supabase)
