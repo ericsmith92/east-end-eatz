@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
+import type { Place } from '~/types/Place'
 
 export const usePlacesStore = defineStore('places', {
   state: () => ({
-    list: [],
-    status: 'idle'  // idle | loading | error
+    list: [] as Place[] | any[],
+    status: 'idle' 
   }),
 
   actions: {
@@ -11,7 +12,6 @@ export const usePlacesStore = defineStore('places', {
       this.status = 'loading'
       const supabase = useSupabaseClient()
 
-      //@ts-ignore
       const { data, error } = await supabase
         .from('places')
         .select('*')
