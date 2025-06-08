@@ -9,19 +9,26 @@ export const usePlacesStore = defineStore('places', {
     status: 'idle' as 'idle' | 'loading' | 'error',
     offset: 0,
     totalCount: 0,
+    userRatingsTotal: 300,
+    pageSize: PAGE_SIZE,
   }),
+
+  getters: {
+    hasNextPage: state => state.offset + state.pageSize < state.totalCount + state.pageSize,
+  },
 
   actions: {
     async fetchPage(start: number = 0) {
       this.status = 'loading'
       const supabase = useSupabaseClient()
 
-      const end = start + PAGE_SIZE - 1
+      const end = start + this.pageSize - 1
 
       const { data, error, count } = await supabase
         .from('places')
         .select('*', { count: 'exact' })
         .range(start, end)
+        .lt('user_ratings_total', this.userRatingsTotal)
         .order('rating', { ascending: false })
 
       if (error) {
@@ -37,13 +44,13 @@ export const usePlacesStore = defineStore('places', {
     },
 
     async getNextPage() {
-      const nextOffset = this.offset + PAGE_SIZE
+      const nextOffset = this.offset + this.pageSize
       if (nextOffset >= this.totalCount) return
       await this.fetchPage(nextOffset)
     },
 
     async getPreviousPage() {
-      const prevOffset = Math.max(0, this.offset - PAGE_SIZE)
+      const prevOffset = Math.max(0, this.offset - this.pageSize)
       if (this.offset === 0) return
       await this.fetchPage(prevOffset)
     },

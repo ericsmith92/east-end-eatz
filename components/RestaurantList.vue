@@ -11,7 +11,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Place } from '~/types/Place'
-import RestaurantCard from './RestaurantCard.vue'
 
 defineProps({
   restaurants: {

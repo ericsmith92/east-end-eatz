@@ -11,7 +11,7 @@
       <h2 class="text-lg font-semibold">{{ restaurant.name }}</h2>
       <p class="text-sm text-gray-600">{{ restaurant.address }}</p>
       <p class="mt-1 text-sm">
-        ⭐ {{ restaurant.rating }} — {{ restaurant.user_ratings_total }} reviews
+        ⭐ {{ restaurant.rating }} | {{ restaurant.user_ratings_total }} reviews
       </p>
       <p v-if="restaurant.price_level" class="text-sm text-gray-600">
         {{ '$'.repeat(restaurant.price_level) }}
