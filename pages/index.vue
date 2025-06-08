@@ -6,7 +6,7 @@ const placesStore = usePlacesStore()
  *  → Executes the callback during server-side rendering
  *  → Caches the promise so client-side route changes don’t re-fetch
  */
-await callOnce(() => placesStore.fetchAll())
+await callOnce(() => placesStore.fetchPage())
 </script>
 
 <template>
