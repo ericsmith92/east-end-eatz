@@ -14,7 +14,7 @@ export const usePlacesStore = defineStore('places', {
   }),
 
   getters: {
-    hasNextPage: state => state.offset + state.pageSize < state.totalCount + state.pageSize,
+    hasNextPage: state => state.totalCount - state.offset > state.pageSize,
   },
 
   actions: {
