@@ -56,6 +56,8 @@ export const usePlacesStore = defineStore('places', {
     },
 
     async fetchBasedOnTerm(term: string) {
+      this.status = 'loading'
+
       if (!term) {
         await this.fetchPage()
         return
@@ -76,6 +78,7 @@ export const usePlacesStore = defineStore('places', {
 
       this.list = data || []
       this.totalCount = count || 0
+      this.status = 'idle'
     },
   },
 })
