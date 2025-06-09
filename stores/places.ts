@@ -66,7 +66,7 @@ export const usePlacesStore = defineStore('places', {
       const { data, error, count } = await supabase
         .from('places')
         .select('*', { count: 'exact' })
-        .textSearch('name', `'${term}'`)
+        .ilike('name', `%${term}%`)
 
       if (error) {
         console.error(error)
