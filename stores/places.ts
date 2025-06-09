@@ -54,5 +54,28 @@ export const usePlacesStore = defineStore('places', {
       if (this.offset === 0) return
       await this.fetchPage(prevOffset)
     },
+
+    async fetchBasedOnTerm(term: string) {
+      if (!term) {
+        await this.fetchPage()
+        return
+      }
+
+      const supabase = useSupabaseClient()
+
+      const { data, error, count } = await supabase
+        .from('places')
+        .select('*', { count: 'exact' })
+        .textSearch('name', `'${term}'`)
+
+      if (error) {
+        console.error(error)
+        this.status = 'error'
+        return
+      }
+
+      this.list = data || []
+      this.totalCount = count || 0
+    },
   },
 })
