@@ -43,16 +43,22 @@ export const usePlacesStore = defineStore('places', {
       this.status = 'idle'
     },
 
-    async getNextPage() {
+    async getNextPage(
+      // @ts-expect-error
+      fetchCallback: (start: number) => Promise<void> = start => this.fetchPage(start)
+    ) {
       const nextOffset = this.offset + this.pageSize
       if (nextOffset >= this.totalCount) return
-      await this.fetchPage(nextOffset)
+      await fetchCallback(nextOffset)
     },
 
-    async getPreviousPage() {
+    async getPreviousPage(
+      // @ts-expect-error
+      fetchCallback: (start: number) => Promise<void> = start => this.fetchPage(start)
+    ) {
       const prevOffset = Math.max(0, this.offset - this.pageSize)
       if (this.offset === 0) return
-      await this.fetchPage(prevOffset)
+      await fetchCallback(prevOffset)
     },
 
     async fetchBasedOnTerm(term: string, start: number = 0) {

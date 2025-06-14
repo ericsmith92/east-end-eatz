@@ -26,13 +26,18 @@ await callOnce(() => fetchPage())
     <RestaurantList :restaurants="placesStore.list" />
     <div class="flex justify-center gap-4 mt-8 max-w-6xl mx-auto">
       <PaginationButton
-        :onClick="getPreviousPage"
+        :onClick="
+          () =>
+            getPreviousPage(searchQuery ? start => fetchBasedOnTerm(searchQuery, start) : undefined)
+        "
         ariaLabel="Previous"
         label="Previous"
         :disabled="!placesStore.offset"
       />
       <PaginationButton
-        :onClick="getNextPage"
+        :onClick="
+          () => getNextPage(searchQuery ? start => fetchBasedOnTerm(searchQuery, start) : undefined)
+        "
         ariaLabel="Next"
         label="Next"
         :disabled="!placesStore.hasNextPage"
