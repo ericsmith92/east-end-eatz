@@ -55,7 +55,7 @@ export const usePlacesStore = defineStore('places', {
       await this.fetchPage(prevOffset)
     },
 
-    async fetchBasedOnTerm(term: string) {
+    async fetchBasedOnTerm(term: string, start: number = 0) {
       this.status = 'loading'
 
       if (!term) {
@@ -64,10 +64,12 @@ export const usePlacesStore = defineStore('places', {
       }
 
       const supabase = useSupabaseClient()
+      const end = start + this.pageSize - 1
 
       const { data, error, count } = await supabase
         .from('places')
         .select('*', { count: 'exact' })
+        .range(start, end)
         .ilike('name', `%${term}%`)
 
       if (error) {
@@ -78,6 +80,7 @@ export const usePlacesStore = defineStore('places', {
 
       this.list = data || []
       this.totalCount = count || 0
+      this.offset = start
       this.status = 'idle'
     },
   },
