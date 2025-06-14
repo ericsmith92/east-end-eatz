@@ -14,7 +14,7 @@ export const usePlacesStore = defineStore('places', {
   }),
 
   getters: {
-    hasNextPage: state => state.offset + state.pageSize < state.totalCount + state.pageSize,
+    hasNextPage: state => state.totalCount - state.offset > state.pageSize,
   },
 
   actions: {
@@ -43,16 +43,51 @@ export const usePlacesStore = defineStore('places', {
       this.status = 'idle'
     },
 
-    async getNextPage() {
+    async getNextPage(
+      // @ts-expect-error
+      fetchCallback: (start: number) => Promise<void> = start => this.fetchPage(start)
+    ) {
       const nextOffset = this.offset + this.pageSize
       if (nextOffset >= this.totalCount) return
-      await this.fetchPage(nextOffset)
+      await fetchCallback(nextOffset)
     },
 
-    async getPreviousPage() {
+    async getPreviousPage(
+      // @ts-expect-error
+      fetchCallback: (start: number) => Promise<void> = start => this.fetchPage(start)
+    ) {
       const prevOffset = Math.max(0, this.offset - this.pageSize)
       if (this.offset === 0) return
-      await this.fetchPage(prevOffset)
+      await fetchCallback(prevOffset)
+    },
+
+    async fetchBasedOnTerm(term: string, start: number = 0) {
+      this.status = 'loading'
+
+      if (!term) {
+        await this.fetchPage()
+        return
+      }
+
+      const supabase = useSupabaseClient()
+      const end = start + this.pageSize - 1
+
+      const { data, error, count } = await supabase
+        .from('places')
+        .select('*', { count: 'exact' })
+        .range(start, end)
+        .ilike('name', `%${term}%`)
+
+      if (error) {
+        console.error(error)
+        this.status = 'error'
+        return
+      }
+
+      this.list = data || []
+      this.totalCount = count || 0
+      this.offset = start
+      this.status = 'idle'
     },
   },
 })
