@@ -38,6 +38,7 @@ export const usePlacesStore = defineStore('places', {
         .select('*', { count: 'exact' })
         .range(start, end)
         .lt('user_ratings_total', this.userRatingsTotal)
+        .gte('rating', 4)
         .order('rating', { ascending: false })
 
       if (error) {
