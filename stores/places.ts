@@ -3,10 +3,19 @@ import type { Place } from '~/types/Place'
 
 const PAGE_SIZE = 15
 
+interface PlacesState {
+  list: Place[] | any[]
+  status: 'idle' | 'loading' | 'error'
+  offset: number
+  totalCount: number
+  userRatingsTotal: number
+  pageSize: number
+}
+
 export const usePlacesStore = defineStore('places', {
-  state: () => ({
-    list: [] as Place[] | any[],
-    status: 'idle' as 'idle' | 'loading' | 'error',
+  state: (): PlacesState => ({
+    list: [],
+    status: 'idle',
     offset: 0,
     totalCount: 0,
     userRatingsTotal: 300,
@@ -43,29 +52,25 @@ export const usePlacesStore = defineStore('places', {
       this.status = 'idle'
     },
 
-    async getNextPage(
-      // @ts-expect-error
-      fetchCallback: (start: number) => Promise<void> = start => this.fetchPage(start)
-    ) {
+    async getNextPage(fetchCallback?: (start: number) => Promise<void>) {
+      const callback = fetchCallback || this.fetchPage
       const nextOffset = this.offset + this.pageSize
       if (nextOffset >= this.totalCount) return
-      await fetchCallback(nextOffset)
+      await callback(nextOffset)
     },
 
-    async getPreviousPage(
-      // @ts-expect-error
-      fetchCallback: (start: number) => Promise<void> = start => this.fetchPage(start)
-    ) {
+    async getPreviousPage(fetchCallback?: (start: number) => Promise<void>) {
+      const callback = fetchCallback || this.fetchPage
       const prevOffset = Math.max(0, this.offset - this.pageSize)
       if (this.offset === 0) return
-      await fetchCallback(prevOffset)
+      await callback(prevOffset)
     },
 
     async fetchBasedOnTerm(term: string, start: number = 0) {
       this.status = 'loading'
 
       if (!term) {
-        await this.fetchPage()
+        await this.fetchPage(start)
         return
       }
 
