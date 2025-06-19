@@ -1,10 +1,29 @@
-<!-- RestaurantCard.vue -->
+<script setup lang="ts">
+import type { PropType } from 'vue'
+import type { Place } from '~/types/Place'
+
+defineProps({
+  restaurant: {
+    type: Object as PropType<Place>,
+    required: true,
+  },
+})
+
+const googleApiKey = useRuntimeConfig().public.googleMapsApiKey
+
+const addPlaceholderImage = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  img.src = '/img/placeholder.png'
+}
+</script>
+
 <template>
   <div class="border rounded-2xl shadow p-4 hover:shadow-lg transition">
     <img
       v-if="restaurant.photo_ref"
       :src="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${restaurant.photo_ref}&key=${googleApiKey}`"
       :alt="`Photo of ${restaurant.name}`"
+      @error="addPlaceholderImage"
       class="w-full h-48 object-cover rounded-xl mb-3"
     />
     <div>
@@ -19,17 +38,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { PropType } from 'vue'
-import type { Place } from '~/types/Place'
-
-defineProps({
-  restaurant: {
-    type: Object as PropType<Place>,
-    required: true,
-  },
-})
-
-const googleApiKey = useRuntimeConfig().public.googleMapsApiKey
-</script>
