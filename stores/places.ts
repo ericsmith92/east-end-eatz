@@ -3,10 +3,19 @@ import type { Place } from '~/types/Place'
 
 const PAGE_SIZE = 15
 
+interface PlacesState {
+  list: Place[] | any[]
+  status: 'idle' | 'loading' | 'error'
+  offset: number
+  totalCount: number
+  userRatingsTotal: number
+  pageSize: number
+}
+
 export const usePlacesStore = defineStore('places', {
-  state: () => ({
-    list: [] as Place[] | any[],
-    status: 'idle' as 'idle' | 'loading' | 'error',
+  state: (): PlacesState => ({
+    list: [],
+    status: 'idle',
     offset: 0,
     totalCount: 0,
     userRatingsTotal: 300,
@@ -14,7 +23,7 @@ export const usePlacesStore = defineStore('places', {
   }),
 
   getters: {
-    hasNextPage: state => state.offset + state.pageSize < state.totalCount + state.pageSize,
+    hasNextPage: state => state.totalCount - state.offset > state.pageSize,
   },
 
   actions: {
@@ -43,16 +52,47 @@ export const usePlacesStore = defineStore('places', {
       this.status = 'idle'
     },
 
-    async getNextPage() {
+    async getNextPage(fetchCallback?: (start: number) => Promise<void>) {
+      const callback = fetchCallback || this.fetchPage
       const nextOffset = this.offset + this.pageSize
       if (nextOffset >= this.totalCount) return
-      await this.fetchPage(nextOffset)
+      await callback(nextOffset)
     },
 
-    async getPreviousPage() {
+    async getPreviousPage(fetchCallback?: (start: number) => Promise<void>) {
+      const callback = fetchCallback || this.fetchPage
       const prevOffset = Math.max(0, this.offset - this.pageSize)
       if (this.offset === 0) return
-      await this.fetchPage(prevOffset)
+      await callback(prevOffset)
+    },
+
+    async fetchBasedOnTerm(term: string, start: number = 0) {
+      this.status = 'loading'
+
+      if (!term) {
+        await this.fetchPage(start)
+        return
+      }
+
+      const supabase = useSupabaseClient()
+      const end = start + this.pageSize - 1
+
+      const { data, error, count } = await supabase
+        .from('places')
+        .select('*', { count: 'exact' })
+        .range(start, end)
+        .ilike('name', `%${term}%`)
+
+      if (error) {
+        console.error(error)
+        this.status = 'error'
+        return
+      }
+
+      this.list = data || []
+      this.totalCount = count || 0
+      this.offset = start
+      this.status = 'idle'
     },
   },
 })
