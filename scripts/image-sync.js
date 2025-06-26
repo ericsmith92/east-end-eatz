@@ -21,7 +21,7 @@ const s3Client = new S3Client({
 })
 
 async function getPhotoRefs() {
-  const { data, error, count } = await supabase
+  const { data, error } = await supabase
     .from('places')
     .select('id, photo_ref')
     .is('image_url', null)
@@ -29,6 +29,10 @@ async function getPhotoRefs() {
 
   if (error) {
     console.error(error)
+    return
+  }
+
+  if (data.length === 0) {
     return
   }
 
@@ -48,17 +52,18 @@ async function createImages(photoRefs) {
         .from('places')
         .update({ image_url: url, image_last_fetched: new Date().toISOString() })
         .eq('id', id)
+        .throwOnError()
     )
+
     await Promise.all(updates)
 
     const failures = settled
-      .filter(response => response.status !== 'fulfilled')
-      .map(r => response.reason)
+      .filter(r => r.status !== 'fulfilled')
+      .map(r => ({ id: r.reason.id, error: r.reason }))
 
-    failures.forEach(failure => {
-      const errorMessage =
-        failure.error && failure.error.message ? failure.error.message : 'Unknown error'
-      console.warn('Image failed', failure.id, errorMessage)
+    failures.forEach(f => {
+      const message = f.error?.message ?? 'Unknown error'
+      console.warn('Image failed', f.id, message)
     })
   } catch (err) {
     console.error(err)
@@ -70,7 +75,10 @@ async function processRow({ id, photo_ref }) {
   try {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY
     const maxWidth = 800
-    const bucket = 'east-end-eatz-images'
+    const bucket = process.env.AWS_S3_BUCKET
+
+    if (!bucket) throw new Error('AWS_S3_BUCKET environment variable is not defined')
+
     const region = process.env.AWS_REGION
     const googlePhotoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photo_reference=${photo_ref}&key=${apiKey}`
 

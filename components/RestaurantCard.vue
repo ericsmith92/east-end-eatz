@@ -18,7 +18,6 @@ const addPlaceholderImage = (event: Event) => {
 <template>
   <div class="border rounded-2xl shadow p-4 hover:shadow-lg transition">
     <img
-      v-if="restaurant.photo_ref"
       :src="restaurant.image_url ?? '/img/placeholder.png'"
       :alt="`Photo of ${restaurant.name}`"
       @error="addPlaceholderImage"
