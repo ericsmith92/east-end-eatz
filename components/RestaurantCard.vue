@@ -8,6 +8,11 @@ defineProps({
     required: true,
   },
 })
+
+const addPlaceholderImage = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  img.src = '/img/placeholder.png'
+}
 </script>
 
 <template>
@@ -16,6 +21,7 @@ defineProps({
       v-if="restaurant.photo_ref"
       :src="restaurant.image_url ?? '/img/placeholder.png'"
       :alt="`Photo of ${restaurant.name}`"
+      @error="addPlaceholderImage"
       class="w-full h-48 object-cover rounded-xl mb-3"
     />
     <div>
