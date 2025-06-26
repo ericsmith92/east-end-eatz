@@ -20,13 +20,12 @@ const s3Client = new S3Client({
   },
 })
 
-async function getPhotoRefs(batchSize) {
+async function getPhotoRefs() {
   const { data, error, count } = await supabase
     .from('places')
-    .select('id, photo_ref', { count: 'exact' })
+    .select('id, photo_ref')
     .is('image_url', null)
     .order('id', { ascending: true })
-    .limit(batchSize)
 
   if (error) console.error(error)
 
@@ -95,6 +94,6 @@ async function processRow({ id, photo_ref }) {
   }
 }
 
-getPhotoRefs(10)
+getPhotoRefs()
   .then(() => console.log('Got refs'))
   .catch(err => console.error(`Failed to get refs: ${err}`))
