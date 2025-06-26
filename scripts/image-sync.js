@@ -27,18 +27,21 @@ async function getPhotoRefs() {
     .is('image_url', null)
     .order('id', { ascending: true })
 
-  if (error) console.error(error)
+  if (error) {
+    console.error(error)
+    return
+  }
 
-  await createImages(data, count)
-
-  console.log(data)
+  await createImages(data)
 }
 
-async function createImages(photoRefs, count) {
+async function createImages(photoRefs) {
   try {
     const settled = await Promise.allSettled(photoRefs.map(processRow))
 
-    const successes = settled.filter(r => r.status === 'fulfilled').map(r => r.value)
+    const successes = settled
+      .filter(response => response.status === 'fulfilled')
+      .map(response => response.value)
 
     const updates = successes.map(({ id, url }) =>
       supabase
@@ -48,7 +51,9 @@ async function createImages(photoRefs, count) {
     )
     await Promise.all(updates)
 
-    const failures = settled.filter(r => r.status !== 'fulfilled').map(r => r.reason)
+    const failures = settled
+      .filter(response => response.status !== 'fulfilled')
+      .map(r => response.reason)
 
     failures.forEach(failure => {
       const errorMessage =
@@ -94,7 +99,9 @@ async function processRow({ id, photo_ref }) {
 
     return { id, url }
   } catch (error) {
-    throw { id, error }
+    const enhancedError = new Error(`Error processing id ${id}: ${error.message}`)
+    enhancedError.id = id
+    throw enhancedError
   }
 }
 
