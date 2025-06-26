@@ -50,7 +50,11 @@ async function createImages(photoRefs, count) {
 
     const failures = settled.filter(r => r.status !== 'fulfilled').map(r => r.reason)
 
-    failures.forEach(f => console.warn('Image failed', f.id, f.error.message))
+    failures.forEach(failure => {
+      const errorMessage =
+        failure.error && failure.error.message ? failure.error.message : 'Unknown error'
+      console.warn('Image failed', failure.id, errorMessage)
+    })
   } catch (err) {
     console.error(err)
     return false
