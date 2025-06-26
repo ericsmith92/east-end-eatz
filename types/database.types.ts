@@ -14,6 +14,8 @@ export type Database = {
           address: string | null
           created_at: string
           id: number
+          image_last_fetched: string | null
+          image_url: string | null
           lat: number | null
           lng: number | null
           name: string | null
@@ -31,6 +33,8 @@ export type Database = {
           address?: string | null
           created_at?: string
           id?: number
+          image_last_fetched?: string | null
+          image_url?: string | null
           lat?: number | null
           lng?: number | null
           name?: string | null
@@ -48,6 +52,8 @@ export type Database = {
           address?: string | null
           created_at?: string
           id?: number
+          image_last_fetched?: string | null
+          image_url?: string | null
           lat?: number | null
           lng?: number | null
           name?: string | null

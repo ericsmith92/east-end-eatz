@@ -8,10 +8,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "db:types": "pnpm dlx supabase gen types typescript --project-id $(cat supabase/.temp/project-ref | tr -d '\n') > types/database.types.ts",
+    "db:types": "dotenv -- pnpm dlx supabase gen types typescript --project-id $(cat supabase/.temp/project-ref | tr -d '\n') > types/database.types.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.837.0",
     "@googlemaps/google-maps-services-js": "^3.4.1",
     "@nuxt/eslint": "1.4.0",
     "@nuxtjs/tailwindcss": "7.0.0-beta.0",
@@ -21,11 +22,13 @@
     "eslint": "^9.27.0",
     "nuxt": "^3.17.3",
     "pinia": "^3.0.2",
+    "sharp": "^0.34.2",
     "tailwindcss": "^4.1.7",
     "vue": "^3.5.14",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "dotenv-cli": "^8.0.0",
     "prettier": "^3.5.3",
     "supabase": "^2.23.4",
     "typescript": "^5.8.3",

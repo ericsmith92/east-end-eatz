@@ -9,8 +9,6 @@ defineProps({
   },
 })
 
-const googleApiKey = useRuntimeConfig().public.googleMapsApiKey
-
 const addPlaceholderImage = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.src = '/img/placeholder.png'
@@ -20,8 +18,7 @@ const addPlaceholderImage = (event: Event) => {
 <template>
   <div class="border rounded-2xl shadow p-4 hover:shadow-lg transition">
     <img
-      v-if="restaurant.photo_ref"
-      :src="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${restaurant.photo_ref}&key=${googleApiKey}`"
+      :src="restaurant.image_url ?? '/img/placeholder.png'"
       :alt="`Photo of ${restaurant.name}`"
       @error="addPlaceholderImage"
       class="w-full h-48 object-cover rounded-xl mb-3"
