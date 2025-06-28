@@ -14,6 +14,6 @@ const place = computed(() => placesStore.current)
 
 <template>
   <div>
-    <Restaurant :place="place" />
+    <Restaurant :restaurant="place" />
   </div>
 </template>
