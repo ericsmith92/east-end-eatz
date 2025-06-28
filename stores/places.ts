@@ -38,7 +38,7 @@ export const usePlacesStore = defineStore('places', {
       if (error) {
         console.error(error)
         this.status = 'error'
-        return null
+        return
       }
 
       this.current = data
