@@ -5,6 +5,7 @@ const PAGE_SIZE = 15
 
 interface PlacesState {
   list: Place[] | any[]
+  current: Place | any | null
   status: 'idle' | 'loading' | 'error'
   offset: number
   totalCount: number
@@ -15,6 +16,7 @@ interface PlacesState {
 export const usePlacesStore = defineStore('places', {
   state: (): PlacesState => ({
     list: [],
+    current: null,
     status: 'idle',
     offset: 0,
     totalCount: 0,
@@ -27,6 +29,22 @@ export const usePlacesStore = defineStore('places', {
   },
 
   actions: {
+    async fetchPlace(id: number) {
+      this.status = 'loading'
+      const supabase = useSupabaseClient()
+
+      const { data, error } = await supabase.from('places').select('*').eq('id', id).single()
+
+      if (error) {
+        console.error(error)
+        this.status = 'error'
+        return
+      }
+
+      this.current = data
+      this.status = 'idle'
+    },
+
     async fetchPage(start: number = 0) {
       this.status = 'loading'
       const supabase = useSupabaseClient()
