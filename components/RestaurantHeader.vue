@@ -23,7 +23,7 @@ defineProps({
   <header class="space-y-2">
     <h1 class="text-3xl font-semibold">{{ name }}</h1>
     <div class="flex items-center gap-2 text-sm" v-if="rating">
-      <!-- <StarRating :value="place.rating" /> -->
+      <StarRating :rating="rating" />
       <span class="font-medium">{{ rating.toFixed(1) }}</span>
       <span class="text-gray-500">({{ ratingsTotal ?? 0 }} reviews)</span>
     </div>
