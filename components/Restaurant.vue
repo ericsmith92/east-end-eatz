@@ -26,12 +26,12 @@ const directionsUrl = computed(() => {
           :rating="restaurant.rating ?? 0"
           :ratings-total="restaurant.user_ratings_total ?? 0"
         />
-        <!-- 
+
         <ActionButtons
-          :phone="place.phone_number"
-          :website="place.website"
+          :phone="restaurant.phone_number"
+          :website="restaurant.website"
           :directions-url="directionsUrl"
-        /> -->
+        />
       </div>
       <!-- <MapEmbed
         v-if="place.lat !== null && place.lng !== null"
