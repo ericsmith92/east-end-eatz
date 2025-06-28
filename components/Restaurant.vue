@@ -33,12 +33,12 @@ const directionsUrl = computed(() => {
           :directions-url="directionsUrl"
         />
       </div>
-      <!-- <MapEmbed
-        v-if="place.lat !== null && place.lng !== null"
-        :lat="place.lat"
-        :lng="place.lng"
+      <Map
+        v-if="restaurant.lat !== null && restaurant.lng !== null"
+        :lat="restaurant.lat"
+        :lng="restaurant.lng"
         class="h-64 lg:h-full rounded-xl shadow"
-      /> -->
+      />
     </div>
   </section>
 </template>
