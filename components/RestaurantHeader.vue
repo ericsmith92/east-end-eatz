@@ -13,9 +13,9 @@ defineProps<{
 
 <template>
   <header class="space-y-2">
-    <h1 class="text-3xl font-semibold">{{ name }}</h1>
     <div class="flex flex-col md:flex-row gap-4">
       <div class="md:w-1/2">
+        <h1 class="text-3xl font-semibold">{{ name }}</h1>
         <div class="flex items-center gap-2 text-sm" v-if="rating">
           <StarRating :rating="rating" />
           <span class="font-medium">{{ rating.toFixed(1) }}</span>

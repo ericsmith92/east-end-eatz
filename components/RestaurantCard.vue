@@ -16,22 +16,24 @@ const addPlaceholderImage = (event: Event) => {
 </script>
 
 <template>
-  <div class="border rounded-2xl shadow p-4 hover:shadow-lg transition">
-    <img
-      :src="restaurant.image_url ?? '/img/placeholder.png'"
-      :alt="`Photo of ${restaurant.name}`"
-      @error="addPlaceholderImage"
-      class="w-full h-48 object-cover rounded-xl mb-3"
-    />
-    <div>
-      <h2 class="text-lg font-semibold">{{ restaurant.name }}</h2>
-      <p class="text-sm text-gray-600">{{ restaurant.address }}</p>
-      <p class="mt-1 text-sm">
-        ⭐ {{ restaurant.rating }} | {{ restaurant.user_ratings_total }} reviews
-      </p>
-      <p v-if="restaurant.price_level" class="text-sm text-gray-600">
-        {{ '$'.repeat(restaurant.price_level) }}
-      </p>
+  <NuxtLink :to="`/restaurant/${restaurant.id}`">
+    <div class="border rounded-2xl shadow p-4 hover:shadow-lg transition">
+      <img
+        :src="restaurant.image_url ?? '/img/placeholder.png'"
+        :alt="`Photo of ${restaurant.name}`"
+        @error="addPlaceholderImage"
+        class="w-full h-48 object-cover rounded-xl mb-3"
+      />
+      <div>
+        <h2 class="text-lg font-semibold">{{ restaurant.name }}</h2>
+        <p class="text-sm text-gray-600">{{ restaurant.address }}</p>
+        <p class="mt-1 text-sm">
+          ⭐ {{ restaurant.rating }} | {{ restaurant.user_ratings_total }} reviews
+        </p>
+        <p v-if="restaurant.price_level" class="text-sm text-gray-600">
+          {{ '$'.repeat(restaurant.price_level) }}
+        </p>
+      </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
