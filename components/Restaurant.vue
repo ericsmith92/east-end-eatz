@@ -25,21 +25,18 @@ const directionsUrl = computed(() => {
           :address="restaurant.address ?? ''"
           :rating="restaurant.rating ?? 0"
           :ratings-total="restaurant.user_ratings_total ?? 0"
-          :hours="restaurant.weekday_hours as string[]"
-        />
-
-        <ActionButtons
           :phone="restaurant.phone_number"
           :website="restaurant.website"
-          :directions-url="directionsUrl"
+          :directionsUrl="directionsUrl"
+          :hours="restaurant.weekday_hours as string[]"
         />
       </div>
-      <!-- <Map
+      <Map
         v-if="restaurant.lat !== null && restaurant.lng !== null"
         :lat="restaurant.lat"
         :lng="restaurant.lng"
         class="h-64 lg:h-full rounded-xl shadow"
-      /> -->
+      />
     </div>
   </section>
 </template>

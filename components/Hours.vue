@@ -3,7 +3,10 @@ defineProps<{ hours: string[] }>()
 </script>
 
 <template>
-  <ul class="space-y-0.5">
-    <li v-for="(line, i) in hours" :key="i">{{ line }}</li>
-  </ul>
+  <div>
+    <h2 class="text-1xl font-semibold">Hours</h2>
+    <ul class="space-y-0.5">
+      <li v-for="(line, i) in hours" :key="i">{{ line }}</li>
+    </ul>
+  </div>
 </template>
