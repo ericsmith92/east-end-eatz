@@ -1,22 +1,11 @@
 <script setup lang="ts">
-defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  rating: {
-    type: Number,
-    required: true,
-  },
-  ratingsTotal: {
-    type: Number,
-    required: true,
-  },
-})
+defineProps<{
+  name: string
+  rating: number
+  ratingsTotal: number
+  address: string
+  hours: string[]
+}>()
 </script>
 
 <template>
@@ -28,5 +17,6 @@ defineProps({
       <span class="text-gray-500">({{ ratingsTotal ?? 0 }} reviews)</span>
     </div>
     <address v-if="address" class="not-italic text-gray-700">{{ address }}</address>
+    <Hours v-if="hours?.length" :hours="hours" />
   </header>
 </template>

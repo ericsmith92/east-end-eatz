@@ -25,6 +25,7 @@ const directionsUrl = computed(() => {
           :address="restaurant.address ?? ''"
           :rating="restaurant.rating ?? 0"
           :ratings-total="restaurant.user_ratings_total ?? 0"
+          :hours="restaurant.weekday_hours as string[]"
         />
 
         <ActionButtons
