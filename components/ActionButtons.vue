@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-3">
+  <div class="flex flex-wrap gap-3 py-3">
     <a
       v-if="phone"
       :href="`tel:${phone}`"
