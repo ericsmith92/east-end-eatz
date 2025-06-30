@@ -16,8 +16,8 @@ const addPlaceholderImage = (event: Event) => {
 </script>
 
 <template>
-  <NuxtLink :to="`/restaurant/${restaurant.id}`">
-    <div class="border rounded-2xl shadow p-4 hover:shadow-lg transition">
+  <NuxtLink :to="`/restaurant/${restaurant.id}`" class="block">
+    <div class="border border-gray-300 rounded-2xl shadow p-4 hover:shadow-lg transition">
       <img
         :src="restaurant.image_url ?? '/img/placeholder.png'"
         :alt="`Photo of ${restaurant.name}`"
