@@ -10,6 +10,7 @@
         />
         <h2 class="text-xl font-semibold tracking-tight">East End Eatz</h2>
       </NuxtLink>
+      <SignInButton />
     </div>
   </header>
 </template>
