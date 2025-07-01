@@ -6,6 +6,7 @@
           src="/img/east-end-eatz-footer-logo.png"
           alt="East End Eatz logo: smiling raccoon mascot"
           class="h-12 w-auto"
+          width="72"
         />
       </NuxtLink>
     </div>
