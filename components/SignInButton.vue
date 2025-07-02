@@ -4,15 +4,33 @@ const user = useSupabaseUser()
 
 const fallbackAvatar = 'https://placehold.co/40x40?text=U'
 
-function signIn() {
-  supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin },
-  })
+async function signIn() {
+  try {
+    const redirectTo = typeof window !== 'undefined' ? window.location.origin : undefined
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: redirectTo },
+    })
+
+    if (error) {
+      console.error(error)
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 async function signOut() {
-  await supabase.auth.signOut()
+  try {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.error(error)
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }
 </script>
 
@@ -25,7 +43,9 @@ async function signOut() {
     >
       <img
         :src="user.user_metadata.avatar_url || fallbackAvatar"
-        alt=""
+        :alt="
+          user.user_metadata.full_name ? `${user.user_metadata.full_name}'s avatar` : 'User avatar'
+        "
         class="h-6 w-6 rounded-full"
       />
       <span class="hidden sm:inline">Sign out</span>
