@@ -2,7 +2,7 @@
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 
-const fallbackAvatar = 'https://placehold.co/40x40?text=U'
+const fallbackAvatar = '/img/avatar-placeholder.png'
 
 async function signIn() {
   try {
